@@ -1,4 +1,4 @@
-module github.com/sz-sailing/gflib
+module github.com/powershopy/library
 
 go 1.15
 
