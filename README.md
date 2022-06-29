@@ -4,7 +4,7 @@
 
 ## 使用方式
 ```
-go get github.com/sz-sailing/gflib
+go get github.com/powershopy/library
 ```
 
 ## MongoDB 连接
