@@ -1,4 +1,4 @@
-package logger
+package logging
 
 import (
 	"context"
@@ -12,6 +12,7 @@ var log *logrus.Logger
 type LoggerConfig struct {
 	//LogType  string
 	LogLevel string
+	Pretty   bool
 	//LogFile  string
 }
 
@@ -26,7 +27,7 @@ func Config(config LoggerConfig) *logrus.Logger {
 	//}
 	log.SetFormatter(&logrus.JSONFormatter{
 		TimestampFormat:   utils.TimeFormat,
-		PrettyPrint:       false,
+		PrettyPrint:       config.Pretty,
 		DisableHTMLEscape: true,
 	})
 	//if config.LogType == "file" {
