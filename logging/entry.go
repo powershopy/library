@@ -48,21 +48,21 @@ func (e *Entry) WithField(key string, value interface{}) *Entry {
 }
 
 func (e *Entry) Debug(ctx context.Context, args ...interface{}) {
-	e.Entry.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Debug(args)
+	e.Entry.WithFields(utils.GetCommonMetaFromCtx(ctx)).Debug(args)
 }
 
 func (e *Entry) Info(ctx context.Context, args ...interface{}) {
-	e.Entry.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Info(args...)
+	e.Entry.WithFields(utils.GetCommonMetaFromCtx(ctx)).Info(args...)
 }
 
 func (e *Entry) Warn(ctx context.Context, args ...interface{}) {
-	e.Entry.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Warn(args...)
+	e.Entry.WithFields(utils.GetCommonMetaFromCtx(ctx)).Warn(args...)
 }
 
 func (e *Entry) Warning(ctx context.Context, args ...interface{}) {
-	e.Entry.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Warning(args...)
+	e.Entry.WithFields(utils.GetCommonMetaFromCtx(ctx)).Warning(args...)
 }
 
 func (e *Entry) Error(ctx context.Context, args ...interface{}) {
-	e.Entry.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Error(args...)
+	e.Entry.WithFields(utils.GetCommonMetaFromCtx(ctx)).Error(args...)
 }
