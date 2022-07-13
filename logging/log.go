@@ -59,77 +59,77 @@ func WithFields(fields logrus.Fields) *Entry {
 
 // Debug logs a message at level Debug on the standard logger.
 func Debug(ctx context.Context, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Debug(args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Debug(args...)
 }
 
 // Print logs a message at level Info on the standard logger.
 func Print(ctx context.Context, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Print(args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Print(args...)
 }
 
 // Info logs a message at level Info on the standard logger.
 func Info(ctx context.Context, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Info(args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Info(args...)
 }
 
 // Warn logs a message at level Warn on the standard logger.
 func Warn(ctx context.Context, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Warn(args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Warn(args...)
 }
 
 // Warning logs a message at level Warn on the standard logger.
 func Warning(ctx context.Context, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Warning(args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Warning(args...)
 }
 
 // Error logs a message at level Error on the standard logger.
 func Error(ctx context.Context, args ...interface{}) {
-	withStack(WithFields(utils.GetTraceLogEntryFromContext(ctx))).Error(ctx, args...)
+	withStack(WithFields(utils.GetCommonMetaFromCtx(ctx))).Error(ctx, args...)
 }
 
 // Panic logs a message at level Panic on the standard logger.
 func Panic(ctx context.Context, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Panic(args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Panic(args...)
 }
 
 // Fatal logs a message at level Fatal on the standard logger.
 func Fatal(ctx context.Context, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Fatal(args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Fatal(args...)
 }
 
 // Debugf logs a message at level Debug on the standard logger.
 func Debugf(ctx context.Context, format string, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Debugf(format, args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Debugf(format, args...)
 }
 
 // Printf logs a message at level Info on the standard logger.
 func Printf(ctx context.Context, format string, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Printf(format, args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Printf(format, args...)
 }
 
 // Infof logs a message at level Info on the standard logger.
 func Infof(ctx context.Context, format string, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Infof(format, args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Infof(format, args...)
 }
 
 // Warnf logs a message at level Warn on the standard logger.
 func Warnf(ctx context.Context, format string, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Warnf(format, args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Warnf(format, args...)
 }
 
 // Warningf logs a message at level Warn on the standard logger.
 func Warningf(ctx context.Context, format string, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Warningf(format, args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Warningf(format, args...)
 }
 
 // Errorf logs a message at level Error on the standard logger.
 func Errorf(ctx context.Context, format string, args ...interface{}) {
-	withStack(WithFields(utils.GetTraceLogEntryFromContext(ctx))).Errorf(format, args...)
+	withStack(WithFields(utils.GetCommonMetaFromCtx(ctx))).Errorf(format, args...)
 }
 
 // Panicf logs a message at level Panic on the standard logger.
 func Panicf(ctx context.Context, format string, args ...interface{}) {
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Panicf(format, args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Panicf(format, args...)
 }
 
 // Fatalf logs a message at level Fatal on the standard logger.
@@ -138,5 +138,5 @@ func Fatalf(ctx context.Context, format string, args ...interface{}) {
 	log.WithFields(map[string]interface{}{
 		"trace_id": traceInfo.TraceID,
 	})
-	log.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Fatalf(format, args...)
+	log.WithFields(utils.GetCommonMetaFromCtx(ctx)).Fatalf(format, args...)
 }
