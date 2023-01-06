@@ -85,7 +85,6 @@ func PubSubMethod(ctx context.Context, appName, PubSubName, topicName string, da
 		"pubsub_name": PubSubName,
 		"topic_name":  topicName,
 	}).Info(ctx, "start pubsub")
-	ctx = context.Background()
 	if traceId != "" {
 		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
 	}
@@ -107,7 +106,6 @@ func InvokeMethod(ctx context.Context, appName, method string, data interface{})
 		"app_id": appName,
 		"method": method,
 	}).Info(ctx, "start invoke")
-	ctx = context.Background()
 	if traceId != "" {
 		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
 	}
@@ -150,7 +148,6 @@ func InvokeMethodWithProto(ctx context.Context, appName, method string, request,
 		"app_id": appName,
 		"method": method,
 	}).Info(ctx, "start invoke")
-	ctx = context.Background()
 	if traceId != "" {
 		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
 	}
@@ -165,6 +162,34 @@ func InvokeMethodWithProto(ctx context.Context, appName, method string, request,
 		return err
 	}
 	err = proto.Unmarshal(out, response)
+	return err
+}
+
+func PublishEvent(ctx context.Context, pubsubName, topicName string, data interface{}) error {
+	wg.Wait()
+	traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
+	if traceId != "" {
+		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+	}
+	err := cli.PublishEvent(ctx, pubsubName, topicName, data)
+	//增加调用错误日志
+	if err != nil {
+		logging.WithFields(map[string]interface{}{
+			"pubsubName": pubsubName,
+			"topicName":  topicName,
+			"err":        err,
+		}).Error(ctx, "publish err")
+		return err
+	}
+	return err
+}
+
+func InvokeOutputBinding(ctx context.Context, in *client.InvokeBindingRequest) error {
+	traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
+	if traceId != "" {
+		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+	}
+	err := cli.InvokeOutputBinding(ctx, in)
 	return err
 }
 
