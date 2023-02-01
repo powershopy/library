@@ -12,7 +12,7 @@ type Entry struct {
 }
 
 func (e *Entry) withStack(entry *Entry) *Entry {
-	const depth = 8
+	const depth = 20
 	var pcs [depth]uintptr
 	n := runtime.Callers(3, pcs[:])
 	frames := runtime.CallersFrames(pcs[:n])
@@ -64,5 +64,5 @@ func (e *Entry) Warning(ctx context.Context, args ...interface{}) {
 }
 
 func (e *Entry) Error(ctx context.Context, args ...interface{}) {
-	e.Entry.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Error(args...)
+	e.withStack(e).Entry.WithFields(utils.GetTraceLogEntryFromContext(ctx)).Error(args...)
 }

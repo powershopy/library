@@ -9,7 +9,7 @@ type StackInfo struct {
 }
 
 func withStack(entry *Entry) *Entry {
-	const depth = 8
+	const depth = 20
 	var pcs [depth]uintptr
 	n := runtime.Callers(3, pcs[:])
 	frames := runtime.CallersFrames(pcs[:n])
