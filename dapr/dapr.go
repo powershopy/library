@@ -79,14 +79,17 @@ func PubSubMethod(ctx context.Context, appName, PubSubName, topicName string, da
 	if err != nil {
 		return err
 	}
-	traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
-	logging.WithFields(map[string]interface{}{
-		"app_id":      appName,
-		"pubsub_name": PubSubName,
-		"topic_name":  topicName,
-	}).Info(ctx, "start pubsub")
-	if traceId != "" {
-		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+	r := ghttp.RequestFromCtx(ctx)
+	if r != nil {
+		traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
+		logging.WithFields(map[string]interface{}{
+			"app_id":      appName,
+			"pubsub_name": PubSubName,
+			"topic_name":  topicName,
+		}).Info(ctx, "start pubsub")
+		if traceId != "" {
+			ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+		}
 	}
 	return cli.PublishEvent(ctx, PubSubName, topicName, bytes)
 }
@@ -101,13 +104,16 @@ func InvokeMethod(ctx context.Context, appName, method string, data interface{})
 		ContentType: "application/json",
 		Data:        bytes,
 	}
-	traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
-	logging.WithFields(map[string]interface{}{
-		"app_id": appName,
-		"method": method,
-	}).Info(ctx, "start invoke")
-	if traceId != "" {
-		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+	r := ghttp.RequestFromCtx(ctx)
+	if r != nil {
+		traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
+		logging.WithFields(map[string]interface{}{
+			"app_id": appName,
+			"method": method,
+		}).Info(ctx, "start invoke")
+		if traceId != "" {
+			ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+		}
 	}
 	res, err := cli.InvokeMethodWithContent(ctx, appName, method, "post", content)
 	if len(res) > 0 && res[0] != '{' { //解压缩数据
@@ -143,13 +149,16 @@ func InvokeMethodWithProto(ctx context.Context, appName, method string, request,
 		Data:        data,
 		ContentType: "protobuf",
 	}
-	traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
-	logging.WithFields(map[string]interface{}{
-		"app_id": appName,
-		"method": method,
-	}).Info(ctx, "start invoke")
-	if traceId != "" {
-		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+	r := ghttp.RequestFromCtx(ctx)
+	if r != nil {
+		traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
+		logging.WithFields(map[string]interface{}{
+			"app_id": appName,
+			"method": method,
+		}).Info(ctx, "start invoke")
+		if traceId != "" {
+			ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+		}
 	}
 	out, err := cli.InvokeMethodWithContent(ctx, appName, method, "post", content)
 	//增加调用错误日志
@@ -167,9 +176,12 @@ func InvokeMethodWithProto(ctx context.Context, appName, method string, request,
 
 func PublishEvent(ctx context.Context, pubsubName, topicName string, data interface{}) error {
 	wg.Wait()
-	traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
-	if traceId != "" {
-		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+	r := ghttp.RequestFromCtx(ctx)
+	if r != nil {
+		traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
+		if traceId != "" {
+			ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+		}
 	}
 	err := cli.PublishEvent(ctx, pubsubName, topicName, data)
 	//增加调用错误日志
@@ -185,9 +197,12 @@ func PublishEvent(ctx context.Context, pubsubName, topicName string, data interf
 }
 
 func InvokeOutputBinding(ctx context.Context, in *client.InvokeBindingRequest) error {
-	traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
-	if traceId != "" {
-		ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+	r := ghttp.RequestFromCtx(ctx)
+	if r != nil {
+		traceId := ghttp.RequestFromCtx(ctx).Header.Get("traceparent")
+		if traceId != "" {
+			ctx = cli.WithTraceID(ctx, traceId) //链路追踪
+		}
 	}
 	err := cli.InvokeOutputBinding(ctx, in)
 	return err
