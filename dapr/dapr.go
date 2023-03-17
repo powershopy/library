@@ -211,3 +211,20 @@ func InvokeOutputBinding(ctx context.Context, in *client.InvokeBindingRequest) e
 func Client() client.Client {
 	return cli
 }
+
+// 关闭边车
+func Shutdown(ctx context.Context) error {
+	var err error
+	for i := 0; i < 20; i++ {
+		err = cli.Shutdown(ctx)
+		logging.WithFields(map[string]interface{}{
+			"err":         err,
+			"retry_times": i,
+		}).Info(context.Background(), "shutdown sidecar result")
+		if err != nil {
+			break
+		}
+		time.Sleep(time.Millisecond * 100)
+	}
+	return err
+}

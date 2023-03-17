@@ -9,4 +9,5 @@ require (
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	google.golang.org/grpc v1.47.0
+	gorm.io/gorm v1.24.5 // indirect
 )
