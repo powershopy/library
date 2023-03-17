@@ -228,3 +228,16 @@ func Shutdown(ctx context.Context) error {
 	}
 	return err
 }
+
+func Upload(ctx context.Context, componentName string, fileKey string, filePath string) error {
+	wg.Wait()
+	err := cli.InvokeOutputBinding(ctx, &client.InvokeBindingRequest{
+		Name:      componentName,
+		Operation: "create",
+		Metadata: map[string]string{
+			"key":      fileKey,
+			"filePath": filePath,
+		},
+	})
+	return err
+}
