@@ -4,39 +4,14 @@ import (
 	"context"
 	"github.com/powershopy/library/utils"
 	"github.com/sirupsen/logrus"
-	"runtime"
 )
 
 type Entry struct {
 	*logrus.Entry
 }
 
-func (e *Entry) withStack(entry *Entry) *Entry {
-	const depth = 20
-	var pcs [depth]uintptr
-	n := runtime.Callers(3, pcs[:])
-	frames := runtime.CallersFrames(pcs[:n])
-	s := []StackInfo{}
-	for {
-		frame, more := frames.Next()
-		s = append(s, StackInfo{
-			File:     frame.File,
-			Line:     frame.Line,
-			Function: frame.Function,
-		})
-		if !more {
-			break
-		}
-	}
-	if entry == nil {
-		return WithFields(map[string]interface{}{
-			"stacks": s,
-		})
-	} else {
-		return entry.WithFields(map[string]interface{}{
-			"stacks": s,
-		})
-	}
+func (e *Entry) withStack() *Entry {
+	return withStack(e)
 }
 
 func (e *Entry) WithFields(fields logrus.Fields) *Entry {
@@ -64,5 +39,5 @@ func (e *Entry) Warning(ctx context.Context, args ...interface{}) {
 }
 
 func (e *Entry) Error(ctx context.Context, args ...interface{}) {
-	e.withStack(e).Entry.WithFields(utils.GetCommonMetaFromCtx(ctx)).Error(args...)
+	e.withStack().Entry.WithFields(utils.GetCommonMetaFromCtx(ctx)).Error(args...)
 }

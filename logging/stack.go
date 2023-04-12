@@ -1,6 +1,9 @@
 package logging
 
-import "runtime"
+import (
+	"runtime/debug"
+	"strings"
+)
 
 type StackInfo struct {
 	File     string `json:"file"`
@@ -9,22 +12,24 @@ type StackInfo struct {
 }
 
 func withStack(entry *Entry) *Entry {
-	const depth = 20
-	var pcs [depth]uintptr
-	n := runtime.Callers(3, pcs[:])
-	frames := runtime.CallersFrames(pcs[:n])
-	s := []StackInfo{}
-	for {
-		frame, more := frames.Next()
-		s = append(s, StackInfo{
-			File:     frame.File,
-			Line:     frame.Line,
-			Function: frame.Function,
-		})
-		if !more {
-			break
+	stackStr := string(debug.Stack())
+	stacks := strings.Split(stackStr, "\n")
+	stacks = append(stacks[:1], stacks[3:]...) //去掉debug.Stack
+	newStacks := []string{}
+	skip := false
+	for _, str := range stacks {
+		if skip && strings.Contains(str, ".go:") {
+			skip = false
+			continue
 		}
+		skip = false
+		if strings.Contains(str, "logging.") { //去掉日志包
+			skip = true
+			continue
+		}
+		newStacks = append(newStacks, str)
 	}
+	s := strings.Join(newStacks, "\n")
 	if entry == nil {
 		return WithFields(map[string]interface{}{
 			"stacks": s,
