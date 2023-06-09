@@ -27,6 +27,32 @@ func GetCommonMetaFromCtx(ctx context.Context) map[string]interface{} {
 		if len(logIds) > 0 {
 			meta["log_id"] = logIds[0]
 		}
+		requestIds := md.Get("request_id")
+		if len(requestIds) > 0 {
+			meta["request_id"] = requestIds[0]
+		}
+	}
+	md, ok = metadata.FromOutgoingContext(ctx)
+	if ok {
+		//dapr trace处理
+		traceparents := md.Get(TraceparentKey)
+		if len(traceparents) > 0 {
+			traceStr := traceparents[0]
+			traceSlice := strings.Split(traceStr, "-")
+			if len(traceSlice) == 4 {
+				meta["trace_id"] = traceSlice[1]
+				meta["span_id"] = traceSlice[2]
+			}
+		}
+		//xxl log_id处理
+		logIds := md.Get("xxl_log_id")
+		if len(logIds) > 0 {
+			meta["log_id"] = logIds[0]
+		}
+		requestIds := md.Get("request_id")
+		if len(requestIds) > 0 {
+			meta["request_id"] = requestIds[0]
+		}
 	}
 	return meta
 }
