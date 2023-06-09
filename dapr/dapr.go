@@ -16,6 +16,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
@@ -139,7 +140,7 @@ func InvokeMethod(ctx context.Context, appName, method string, data interface{})
 	return res, err
 }
 
-func InvokeMethodWithProto(ctx context.Context, appName, method string, request, response proto.Message) error {
+func InvokeMethodWithProto(ctx context.Context, appName, method string, request, response proto.Message, retry ...int64) error {
 	wg.Wait()
 	data, err := proto.Marshal(request)
 	if err != nil {
@@ -160,9 +161,16 @@ func InvokeMethodWithProto(ctx context.Context, appName, method string, request,
 			ctx = cli.WithTraceID(ctx, traceId) //链路追踪
 		}
 	}
+Invoke:
 	out, err := cli.InvokeMethodWithContent(ctx, appName, method, "post", content)
 	//增加调用错误日志
 	if err != nil {
+		if len(retry) > 0 && retry[0] > 0 && strings.Contains(err.Error(), "error reading from server") {
+			//因为服务器压力扩容导致的访问不可用，增加可选重试机制
+			retry[0]--
+			time.Sleep(time.Millisecond * 500)
+			goto Invoke
+		}
 		logging.WithFields(map[string]interface{}{
 			"app_id": appName,
 			"method": method,
@@ -172,6 +180,11 @@ func InvokeMethodWithProto(ctx context.Context, appName, method string, request,
 	}
 	err = proto.Unmarshal(out, response)
 	return err
+}
+
+type NormalDaprRes struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
 }
 
 func PublishEvent(ctx context.Context, pubsubName, topicName string, data interface{}) error {
