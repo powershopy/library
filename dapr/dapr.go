@@ -242,6 +242,7 @@ func Shutdown(ctx context.Context) error {
 	return err
 }
 
+// s3文件上传
 func Upload(ctx context.Context, componentName string, fileKey string, filePath string) error {
 	wg.Wait()
 	err := cli.InvokeOutputBinding(ctx, &client.InvokeBindingRequest{
@@ -253,4 +254,16 @@ func Upload(ctx context.Context, componentName string, fileKey string, filePath 
 		},
 	})
 	return err
+}
+
+func Download(ctx context.Context, componentName string, fileKey string) ([]byte, error) {
+	wg.Wait()
+	out, err := cli.InvokeBinding(ctx, &client.InvokeBindingRequest{
+		Name:      componentName,
+		Operation: "get",
+		Metadata: map[string]string{
+			"key": fileKey,
+		},
+	})
+	return out.Data, err
 }
