@@ -32,6 +32,7 @@ const (
 
 func init() {
 	go func() {
+		logging.Info(context.Background(), "start init daprd")
 		var err error
 		wg.Add(1)
 		defer wg.Done()
@@ -57,11 +58,20 @@ func init() {
 			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(1024*1024*100), grpc.MaxCallSendMsgSize(1024*1024*100)),
 		)
 		if err != nil && retry >= 3 {
+			logging.WithFields(map[string]interface{}{
+				"retry": retry,
+				"err":   err,
+			}).Info(context.Background(), "dapr dial err")
 			log.Fatalln(err)
 		} else if err != nil {
+			logging.WithFields(map[string]interface{}{
+				"retry": retry,
+				"err":   err,
+			}).Info(context.Background(), "dapr dial err")
 			retry++
 			goto Init
 		}
+		logging.Info(context.Background(), "dapr dial success")
 		cli = client.NewClientWithConnection(conn)
 		if cli == nil {
 			log.Fatalln(err)
@@ -265,5 +275,8 @@ func Download(ctx context.Context, componentName string, fileKey string) ([]byte
 			"key": fileKey,
 		},
 	})
+	if err != nil {
+		return nil, err
+	}
 	return out.Data, err
 }
