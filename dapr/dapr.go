@@ -266,7 +266,7 @@ func Upload(ctx context.Context, componentName string, fileKey string, filePath 
 	return err
 }
 
-//下载到文件，之后自己去操作共享目录的文件，适合读取大文件
+// 下载到文件，之后自己去操作共享目录的文件，适合读取大文件
 func DownloadFromS3(ctx context.Context, componentName string, fileKey string, filePath string) error {
 	wg.Wait()
 	err := cli.InvokeOutputBinding(ctx, &client.InvokeBindingRequest{
@@ -280,7 +280,7 @@ func DownloadFromS3(ctx context.Context, componentName string, fileKey string, f
 	return err
 }
 
-//不适合大文件下载
+// 不适合大文件下载
 func Download(ctx context.Context, componentName string, fileKey string) ([]byte, error) {
 	wg.Wait()
 	out, err := cli.InvokeBinding(ctx, &client.InvokeBindingRequest{

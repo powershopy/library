@@ -29,7 +29,13 @@ func StructsToMap[T any](arr []T, field string) (map[string]T, error) {
 		if !value.IsValid() {
 			return nil, errors.New("struct not have field:" + field)
 		}
-		if !value.Comparable() {
+		//if !value.Comparable() {
+		//	return nil, errors.New("struct's field:" + field + " is not comparable")
+		//}
+		//为了兼容老版本的golang
+		k := value.Type().Kind()
+		if k == reflect.Array || k == reflect.Chan || k == reflect.Func || k == reflect.Interface ||
+			k == reflect.Map || k == reflect.Slice || k == reflect.Struct || k == reflect.Pointer {
 			return nil, errors.New("struct's field:" + field + " is not comparable")
 		}
 		m[gconv.String(value.Interface())] = s
