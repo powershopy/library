@@ -1,6 +1,6 @@
 module github.com/powershopy/library
 
-go 1.15
+go 1.18
 
 require (
 	github.com/dapr/go-sdk v1.6.0
